@@ -71,16 +71,15 @@ class Chord:
         # Used for replacing the numbers on the number encoded fretboard
         while self.fret_limit[-1] < self.fretboard.fret_amount:
             # For checking strings that have already been fretted or used on an open using the string index
-            used_strings = []
-
             current_frets = [self.fretboard.constructed_fretboard[num] for num in self.fret_limit]
             note_numbers = [[note[1] for note in inner_list] for inner_list in current_frets]
-            chord = []
+
+            used_strings = []
+            chord = [] # Holds fret numbers that make up the fretted/open notes for the chord
             chord_notes = []
 
             # Check the tuning first for open chords
             # Currently only checks notes at the top of the fret within limit and reads as open
-
             for note in self.chord:
                 for string, fret in enumerate(current_frets):
                     for index, finger in enumerate(fret):
@@ -89,6 +88,9 @@ class Chord:
                             chord_notes.append((finger[0], index))
                             used_strings.append(index)
                             continue
+                    continue
+            print(current_frets)
+
             tab = []
             for fret in note_numbers:
                 fret_tab = []
@@ -112,13 +114,16 @@ class Chord:
 
     # Shows tabs in terminal for debugging
     def show_tabs(self):
-        fret_len = len(self.tabs[0])
         for i in self.tabs:
             for n in i:
                 print(*n)
             print()
-        # Get the number of items in the longest list
-        # Get the number of items in the longest list
 
-        print(fret_len)
+    def export_tabs_to_pdf(self):
+        pass
+fretboard = Fretboard()
 
+chord = ['C', 'E', 'G']
+tabs = Chord(chord, fretboard)
+tabs.find_chords()
+tabs.show_tabs()
