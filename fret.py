@@ -21,9 +21,6 @@ class Fretboard:
         self.encode_fretboard()
         self.assemble_encoded_fretboard()
 
-        # Fret limit. Sets the amount of frets that can be looked at to find each chord.
-        # This ensures that chords are possible to play
-
     def encode_fretboard(self):
         # Uses tuning to encode each string for the note that it will be on each fret.
         # Returns a dictionary where the number is the key and the note is the value.
@@ -73,17 +70,17 @@ class Chord:
         # Stores all numbers where each note from the chord is found.
         # Used for replacing the numbers on the number encoded fretboard
         while self.fret_limit[-1] < self.fretboard.fret_amount:
-            # Tracks string numbers to make sure that strings aren't skipped on a chord
-            # If string numbers aren't sequential the loop is broken and the fret position is moved up by 1
-            string_tracking = []
-
-            # For checking strings that have already been fretted using the string index
+            # For checking strings that have already been fretted or used on an open using the string index
             used_strings = []
 
             current_frets = [self.fretboard.constructed_fretboard[num] for num in self.fret_limit]
             note_numbers = [[note[1] for note in inner_list] for inner_list in current_frets]
             chord = []
             chord_notes = []
+
+            # Check the tuning first for open chords
+            # Currently only checks notes at the top of the fret within limit and reads as open
+
             for note in self.chord:
                 for string, fret in enumerate(current_frets):
                     for index, finger in enumerate(fret):
@@ -92,7 +89,6 @@ class Chord:
                             chord_notes.append((finger[0], index))
                             used_strings.append(index)
                             continue
-                    string_tracking.append(string)
             tab = []
             for fret in note_numbers:
                 fret_tab = []
