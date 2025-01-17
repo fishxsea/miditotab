@@ -49,9 +49,9 @@ class Chord:
 
         # Symbols to generate tab output
         self.no_strum = 'X'
-        self.string = color('┃ ', 'purple40')
-        self.finger = color('● ', 'green80')
-        self.fret_splitter = color('╋━━╋━━╋━━╋━━╋━━╋', 'purple40')
+        self.string = '┃ '
+        self.finger = '● '
+        self.fret_splitter = '╋━━╋━━╋━━╋━━╋━━╋'
         self.top_bottom = '━━━━━━━━━━━━━━━━'
 
         self.tabs = [] # Stores generated tabs
@@ -78,8 +78,10 @@ class Chord:
             chord = [] # Holds fret numbers that make up the fretted/open notes for the chord
             chord_notes = []
 
+
             # Check the tuning first for open chords
             # Currently only checks notes at the top of the fret within limit and reads as open
+            flattened_current_frets = [note[0] for sublist in current_frets for note in sublist]
             for note in self.chord:
                 for string, fret in enumerate(current_frets):
                     for index, finger in enumerate(fret):
@@ -88,9 +90,6 @@ class Chord:
                             chord_notes.append((finger[0], index))
                             used_strings.append(index)
                             continue
-                    continue
-            print(current_frets)
-
             tab = []
             for fret in note_numbers:
                 fret_tab = []
@@ -102,16 +101,47 @@ class Chord:
                 tab.append(fret_tab)
                 tab.append([self.fret_splitter])
             used_strings.sort()
+
+
+            # finds the notes that are fretted with a finger
+            fretted_notes = '8 8 8 8 8 8'.split()
+            used_frets = []
+            for fret in tab[1:]:
+                for index, string in enumerate(fret):
+                    if self.finger in string:
+                        used_frets.append(index)
+            constructed_used_strings = ''
+            for index, fret in enumerate(fretted_notes):
+                if index in used_frets:
+                    constructed_used_strings += str(index)
+                else:
+                    constructed_used_strings += fret
+            constructed_used_strings = [int(i) for i in constructed_used_strings]
+            print(used_frets)
+            print(constructed_used_strings)
+
             if self.is_sequential(used_strings):
                 notes_on_fret = '  '.join([note[0] for note in sorted(chord_notes, key=lambda x: x[1])])
-                tab = tab[1:]
-                top_bar = [self.top_bottom[len(str(self.fret_limit[0])) + 1:], self.fret_limit[0] + 1]
-                tab.insert(0, top_bar)
-                tab.insert(0, [notes_on_fret])
-                tab.append([self.top_bottom])
-                self.tabs.append(tab)
-            self.fret_limit = [fret + 1 for fret in self.fret_limit]
+                new_fret = []
+                for index, note in enumerate(notes_on_fret.split()):
+                    if index == constructed_used_strings[index]:
+                        new_fret.append(note)
+                    else:
+                        new_fret.append(fretboard.tuning[index])
+                print(notes_on_fret)
+                print('new', new_fret)
+                for note in new_fret:
+                    if note not in self.chord:
+                        break
+                else:
+                    tab = tab[1:]
+                    top_bar = [self.top_bottom[len(str(self.fret_limit[0])) + 1:], self.fret_limit[0] + 1]
+                    tab.insert(0, top_bar)
+                    tab.insert(0, ['  '.join(new_fret)])
+                    tab.append([self.top_bottom])
+                    self.tabs.append(tab)
 
+            self.fret_limit = [fret + 1 for fret in self.fret_limit]
     # Shows tabs in terminal for debugging
     def show_tabs(self):
         for i in self.tabs:
@@ -123,7 +153,7 @@ class Chord:
         pass
 fretboard = Fretboard()
 
-chord = ['C', 'E', 'G']
+chord = ['A', 'C#', 'E', 'G#']
 tabs = Chord(chord, fretboard)
 tabs.find_chords()
 tabs.show_tabs()
