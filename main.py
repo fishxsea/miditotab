@@ -101,4 +101,4 @@ class Fret:
 
 chord = ['C', 'E', 'G']
 notes = Fret(chord=chord)
-'git clone https://fishxsea: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@github.com/fishxsea/miditotab'
+
