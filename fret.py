@@ -45,7 +45,7 @@ class Chord:
         self.fretboard = fret_instance # Instance of the generated fretboard
 
         # Sets fret limit that the chord is searched within
-        self.fret_limit = list(range(4))
+        self.fret_limit = list(range(5))
 
         # Symbols to generate tab output
         self.no_strum = 'X'
@@ -79,9 +79,6 @@ class Chord:
             chord_notes = []
 
 
-            # Check the tuning first for open chords
-            # Currently only checks notes at the top of the fret within limit and reads as open
-            flattened_current_frets = [note[0] for sublist in current_frets for note in sublist]
             for note in self.chord:
                 for string, fret in enumerate(current_frets):
                     for index, finger in enumerate(fret):
@@ -101,6 +98,7 @@ class Chord:
                 tab.append(fret_tab)
                 tab.append([self.fret_splitter])
             used_strings.sort()
+            print(tab)
 
 
             # finds the notes that are fretted with a finger
@@ -141,6 +139,8 @@ class Chord:
                     tab.append([self.top_bottom])
                     self.tabs.append(tab)
 
+
+
             self.fret_limit = [fret + 1 for fret in self.fret_limit]
     # Shows tabs in terminal for debugging
     def show_tabs(self):
@@ -153,7 +153,8 @@ class Chord:
         pass
 fretboard = Fretboard()
 
-chord = ['A', 'C#', 'E', 'G#']
+chord = ['D', 'F', 'A', 'C']
 tabs = Chord(chord, fretboard)
 tabs.find_chords()
 tabs.show_tabs()
+# prp964050170 pickup number
