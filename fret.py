@@ -45,7 +45,7 @@ class Chord:
         self.fretboard = fret_instance # Instance of the generated fretboard
 
         # Sets fret limit that the chord is searched within
-        self.fret_limit = list(range(5))
+        self.fret_limit = list(range(4))
 
         # Symbols to generate tab output
         self.no_strum = 'X'
@@ -87,6 +87,7 @@ class Chord:
                             chord_notes.append((finger[0], index))
                             used_strings.append(index)
                             continue
+
             tab = []
             for fret in note_numbers:
                 fret_tab = []
@@ -128,16 +129,13 @@ class Chord:
                         new_fret.append(fretboard.tuning[index])
                 print(notes_on_fret)
                 print('new', new_fret)
-                for note in new_fret:
-                    if note not in self.chord:
-                        break
-                else:
-                    tab = tab[1:]
-                    top_bar = [self.top_bottom[len(str(self.fret_limit[0])) + 1:], self.fret_limit[0] + 1]
-                    tab.insert(0, top_bar)
-                    tab.insert(0, ['  '.join(new_fret)])
-                    tab.append([self.top_bottom])
-                    self.tabs.append(tab)
+
+                tab = tab[1:]
+                top_bar = [self.top_bottom[len(str(self.fret_limit[0])) + 1:], self.fret_limit[0] + 1]
+                tab.insert(0, top_bar)
+                tab.insert(0, ['  '.join(new_fret)])
+                tab.append([self.top_bottom])
+                self.tabs.append(tab)
 
 
 
@@ -153,7 +151,7 @@ class Chord:
         pass
 fretboard = Fretboard()
 
-chord = ['D', 'F', 'A', 'C']
+chord = ['C', 'E', 'G']
 tabs = Chord(chord, fretboard)
 tabs.find_chords()
 tabs.show_tabs()
